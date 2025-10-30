@@ -78,9 +78,9 @@ const executeLoad = (config, target) => {
 };
 
 const config = {
-  smallSrc: '', // 小图链接 尽可能配置小于100k的图片
+  smallSrc: 'https://imgyi.ranranran.qzz.io/file/vA2m4E3a.png', // 小图链接 尽可能配置小于100k的图片
   largeSrc: 'https://imgyi.ranranran.qzz.io/file/1761410495159_IMG_8965.PNG', // 大图链接 最终显示的图片
-  mobileSmallSrc: '', // 手机端小图链接 尽可能配置小于100k的图片
+  mobileSmallSrc: 'https://imgyi.ranranran.qzz.io/file/vA2m4E3a.png', // 手机端小图链接 尽可能配置小于100k的图片
   mobileLargeSrc: 'https://imgyi.ranranran.qzz.io/file/1761410495159_IMG_8965.PNG', // 手机端大图链接 最终显示的图片
   enableRoutes: ['/'],
   };
