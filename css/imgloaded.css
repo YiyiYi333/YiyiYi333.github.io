@@ -1,92 +1,248 @@
-/* 首页头图加载 */
-body[data-type=anzhiyu] #nav,body[data-type=anzhiyu] #scroll-down,body[data-type=anzhiyu] #site-info {
-  -webkit-animation: scale 2.2s cubic-bezier(.6,.1,.25,1) .5s 1 backwards;
-  animation: scale 2.2s cubic-bezier(.6,.1,.25,1) .5s 1 backwards
-}
+/* =============================================
+   首页头图渐进加载样式 - 综合优化版
+   作者：基于多版本优化整合
+   功能：支持渐进加载、响应式、主题切换等
+   ============================================= */
 
-@media screen and (max-width: 768px) {
-  .pl-container {
-      position:relative!important
-  }
-}
-
-@media screen and (min-width: 768px) {
-  #page-header.full_page,.pl-container {
-    height:100vh
-  }
-
-  #page-header.full_page.expand-to-full,.pl-container.expand-to-full {
-    height: 50vh!important
-  }
-  .pl-container {
-      will-change: opacity,transform,filter;
-      opacity: calc(1 - var(--process) * 1)!important;
-      transform: scale(calc(1 + var(--process) * .1));
-      filter: blur(calc(var(--process) * 10px));
-  }
-}
-
+/* 基础容器样式 - 控制整个图片加载容器 */
 .pl-container {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: -2;
-    overflow: hidden;
-    will-change: transform; /* 添加性能优化 */
-    animation: blur-to-clear 2.5s cubic-bezier(.6,.25,.25,1) 0s 1 backwards,scale 2.2s cubic-bezier(.6,.1,.25,1) .5s 1 backwards;
-  }
-
-  .pl-img {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    opacity: .1;
-    transition: opacity 1s;
-    will-change: transform,opacity
-  }
-  .pl-video.pl-visible {
-    display: block
+    width: 100%;                    /* 容器宽度：100%视口宽度 */
+    height: 100%;                   /* 容器高度：100%视口高度 */
+    z-index: -2;                    /* 层级：置于内容后方 */
+    position: fixed;                /* 定位：固定定位，随页面滚动 */
+    overflow: hidden;               /* 溢出：隐藏超出部分 */
+    will-change: transform, opacity, filter; /* 性能优化：提示浏览器这些属性将变化 */
+    
+    /* 【可修改】动画设置：模糊清除 + 缩放动画 */
+    /* 参数说明：动画名称 时长 缓动函数 延迟 迭代次数 填充模式 */
+    animation: blur-to-clear 2.2s cubic-bezier(.62,.21,.25,1) 0s 1 backwards, 
+               scale 1.8s cubic-bezier(.62,.21,.25,1) .3s 1 backwards;
 }
-  @keyframes blur-to-clear {
+
+/* 图片层基础样式 - 控制小图和大图的共同样式 */
+.pl-img {
+    width: 100%;                    /* 宽度：100%容器宽度 */
+    height: 100%;                   /* 高度：100%容器高度 */
+    position: absolute;             /* 定位：绝对定位，叠加显示 */
+    background-position: center;    /* 背景位置：居中显示 */
+    background-size: cover;         /* 背景大小：覆盖整个容器 */
+    background-repeat: no-repeat;   /* 背景重复：不重复 */
+    opacity: 0;                     /* 初始透明度：完全透明 */
+    
+    /* 【可修改】过渡效果：透明度变化 */
+    /* 参数说明：属性 时长 缓动函数 */
+    transition: opacity 1.2s cubic-bezier(.25,.46,.45,.94);
+    will-change: transform, opacity; /* 性能优化 */
+}
+
+/* 视频容器样式 - 支持视频背景（如果需要的话） */
+.pl-video {
+    position: absolute;             /* 定位：绝对定位 */
+    top: 0;                         /* 顶部对齐 */
+    left: 0;                        /* 左侧对齐 */
+    width: 100%;                    /* 宽度100% */
+    height: 100%;                   /* 高度100% */
+    object-fit: cover;              /* 对象适配：覆盖 */
+    z-index: 0;                     /* 层级：最底层 */
+    
+    /* 【可修改】背景：视频加载前的占位背景 */
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAKUlEQVQImU3IMREAIAgAwJfNkQCEsH8cijjpMf6vnXlQaIiJFx+omEBfmqIEZLe2jzcAAAAASUVORK5CYII=);
+    display: none;                  /* 初始状态：隐藏 */
+}
+
+/* 视频可见状态 */
+.pl-video.pl-visible {
+    display: block;                 /* 显示视频 */
+}
+
+/* 可见状态类 - 当图片加载完成后添加 */
+.pl-visible {
+    opacity: 1;                     /* 完全显示 */
+}
+
+/* 模糊效果类 - 主要用于小图的模糊处理 */
+.pl-blur {
+    /* 【可修改】模糊程度：数值越大越模糊 */
+    filter: blur(30px);
+}
+
+/* =============================================
+   动画关键帧定义
+   ============================================= */
+
+/* 模糊到清晰动画 */
+@keyframes blur-to-clear {
     0% {
-      filter: blur(50px);
-      opacity: 1;
+        filter: blur(40px);         /* 初始状态：高度模糊 */
+        opacity: 0.8;               /* 初始透明度 */
     }
     100% {
-      filter: blur(0);
-      opacity: 1;
+        filter: blur(0);            /* 结束状态：无模糊 */
+        opacity: 1;                 /* 完全显示 */
     }
-  }
-  
-  @keyframes scale {
+}
+
+/* 缩放动画 */
+@keyframes scale {
     0% {
-      transform: scale(1.5) translateZ(0);
-      opacity: 0;
+        transform: scale(1.3);      /* 初始状态：放大1.3倍 */
+        opacity: 0;                 /* 完全透明 */
     }
     to {
-      transform: scale(1) translateZ(0);
-      opacity: 1;
+        transform: scale(1);        /* 结束状态：正常大小 */
+        opacity: 1;                 /* 完全显示 */
     }
-  }
-  .pl-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAKUlEQVQImU3IMREAIAgAwJfNkQCEsH8cijjpMf6vnXlQaIiJFx+omEBfmqIEZLe2jzcAAAAASUVORK5CYII=);
- }
+}
 
-  .pl-visible {
-    opacity: 1;
-  }
-  
-  .pl-blur {
-    /* 小图锯齿多，增加高斯模糊 */
-    filter: blur(50px);
-  }
+/* =============================================
+   桌面端样式 (769px及以上)
+   ============================================= */
+@media screen and (min-width: 769px) {
+    /* 【可修改】滚动动态效果：基于CSS变量--process控制 */
+    .pl-container {
+        /* 透明度：随滚动进度从1降到0.2 */
+        opacity: calc(1 - var(--process, 0) * 0.8) !important;
+        /* 缩放：随滚动进度从1倍增加到1.08倍 */
+        transform: scale(calc(1 + var(--process, 0) * 0.08));
+        /* 模糊：随滚动进度从0增加到8px */
+        filter: blur(calc(var(--process, 0) * 8px));
+    }
+    
+    /* 全屏页面头部和容器高度设置 */
+    #page-header.full_page,
+    .pl-container {
+        height: 100vh;              /* 高度：100%视口高度 */
+    }
+    
+    /* 【可修改】扩展模式：某些情况下调整高度 */
+    #page-header.full_page.expand-to-full,
+    .pl-container.expand-to-full {
+        height: 50vh !important;    /* 高度调整为视口50% */
+    }
+}
+
+/* =============================================
+   移动端样式 (768px及以下)
+   ============================================= */
+@media screen and (max-width: 768px) {
+    .pl-container {
+        position: relative !important;  /* 定位改为相对定位 */
+        height: 60vh !important;        /* 【可修改】高度调整为视口60% */
+        
+        /* 【可修改】移动端动画时长调整 */
+        animation-duration: 1.8s, 1.5s; /* 分别对应两个动画的时长 */
+    }
+    
+    /* 移动端减少模糊程度 */
+    .pl-blur {
+        filter: blur(20px);         /* 【可修改】移动端模糊程度 */
+    }
+    
+    /* 【可修改】移动端专用动画 */
+    @keyframes blur-to-clear {
+        0% {
+            filter: blur(25px);     /* 初始模糊程度 */
+            opacity: 0.8;           /* 初始透明度 */
+        }
+        100% {
+            filter: blur(0);        /* 结束无模糊 */
+            opacity: 1;             /* 完全显示 */
+        }
+    }
+}
+
+/* =============================================
+   主题特定动画 - 针对Anzhiyu主题
+   ============================================= */
+body[data-type=anzhiyu] #nav,
+body[data-type=anzhiyu] #scroll-down,
+body[data-type=anzhiyu] #site-info {
+    /* 【可修改】导航元素动画 */
+    animation: scale 2s cubic-bezier(.62,.21,.25,1) .5s 1 backwards;
+}
+
+/* =============================================
+   透明背景设置 - 使其他元素透明以显示背景图
+   ============================================= */
+#footer,
+#page-header,
+#footer-bar,
+#category-bar {
+    background: transparent !important;  /* 背景透明 */
+}
+
+/* =============================================
+   性能优化类 - 提升渲染性能
+   ============================================= */
+.pl-performance {
+    image-rendering: -webkit-optimize-contrast;  /* 图像渲染优化 */
+    image-rendering: crisp-edges;                /* 边缘清晰 */
+    backface-visibility: hidden;                 /* 背面可见性 */
+    perspective: 1000;                           /* 透视距离 */
+    transform-style: preserve-3d;                /* 3D变换样式 */
+}
+
+/* =============================================
+   加载状态指示器 - 图片加载时显示loading
+   ============================================= */
+.pl-loading::before {
+    content: '';                    /* 伪元素内容 */
+    position: absolute;             /* 绝对定位 */
+    top: 50%;                       /* 垂直居中 */
+    left: 50%;                      /* 水平居中 */
+    width: 40px;                    /* 【可修改】loading宽度 */
+    height: 40px;                   /* 【可修改】loading高度 */
+    margin: -20px 0 0 -20px;        /* 居中偏移 */
+    border: 3px solid rgba(255,255,255,0.3);     /* 外圈边框 */
+    border-top: 3px solid rgba(255,255,255,0.8); /* 顶部高亮边框 */
+    border-radius: 50%;             /* 圆形 */
+    animation: pl-spin 1s linear infinite; /* 旋转动画 */
+    z-index: 10;                    /* 较高层级 */
+}
+
+/* Loading旋转动画 */
+@keyframes pl-spin {
+    0% { transform: rotate(0deg); }   /* 初始角度 */
+    100% { transform: rotate(360deg); } /* 结束角度 */
+}
+
+/* =============================================
+   无障碍访问支持 - 为运动敏感用户提供替代
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+    .pl-container,
+    .pl-img,
+    body[data-type=anzhiyu] #nav,
+    body[data-type=anzhiyu] #scroll-down,
+    body[data-type=anzhiyu] #site-info {
+        /* 禁用或大幅减少动画 */
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .pl-loading::before {
+        animation: none;            /* 禁用loading动画 */
+        display: none;              /* 隐藏loading */
+    }
+}
+
+/* =============================================
+   深色模式适配 - 根据系统主题调整
+   ============================================= */
+@media (prefers-color-scheme: dark) {
+    .pl-container {
+        /* 【可修改】深色模式亮度调整 */
+        filter: brightness(0.9);    /* 降低亮度适应深色模式 */
+    }
+}
+
+/* =============================================
+   高对比度模式支持 - 为视觉障碍用户优化
+   ============================================= */
+@media (prefers-contrast: high) {
+    .pl-blur {
+        /* 【可修改】高对比度模式下的模糊效果 */
+        filter: blur(15px) contrast(1.5); /* 减少模糊并增加对比度 */
+    }
+}
