@@ -137,9 +137,9 @@ const executeLoad = (config, target) => {
 // 使用绝对路径确保图片可访问
 const config = {
   smallSrc: 'https://imgyi.ranranran.qzz.io/file/iuurX3Kh.png',
-  largeSrc: 'https://imgyi.ranranran.qzz.io/file/lXObd1rI.png',
+  largeSrc: 'https://imgyi.ranranran.qzz.io/file/1761464847137_IMG_6604.PNG',
   mobileSmallSrc: 'https://imgyi.ranranran.qzz.io/file/iuurX3Kh.png',
-  mobileLargeSrc: 'https://imgyi.ranranran.qzz.io/file/lXObd1rI.png',
+  mobileLargeSrc: 'https://imgyi.ranranran.qzz.io/file/1761464847137_IMG_6604.PNG',
   enableRoutes: ['/'],
 };
 
