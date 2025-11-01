@@ -1,0 +1,231 @@
+/**
+ * Anzhiyu 主题卡片半透明效果
+ * 功能：为各种卡片添加半透明背景效果（无毛玻璃模糊）
+ * 作者：你的名字
+ * 日期：2024年
+ */
+
+/* ===== 全局半透明效果基础设置 ===== */
+#bber-talk,
+#aside-content > .card-widget.card-info,
+#aside-content > .card-widget.card-announcement,
+#aside-content > .sticky_layout > .card-widget,
+#aside-content > .card-widget.welcomeBoxClass,
+#recent-posts > #noticeList,
+.layout > #post,
+#recent-posts > .recent-post-item,
+.layout > #page,
+.layout > #archive,
+.layout > #category,
+.layout > #tag {
+    /* 半透明背景色 - 浅色模式 */
+    background: rgba(255, 255, 255, 0.85) !important;
+    
+    /* 移除毛玻璃效果 */
+    /* backdrop-filter: none; */
+    /* -webkit-backdrop-filter: none; */
+    
+    /* 边框和阴影增强立体感 */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    
+    /* 圆角统一 */
+    border-radius: 16px;
+    
+    /* 过渡动画 */
+    transition: all 0.4s ease;
+}
+
+/* ===== 深色模式适配 ===== */
+[data-theme="dark"] #bber-talk,
+[data-theme="dark"] #aside-content > .card-widget.card-info,
+[data-theme="dark"] #aside-content > .card-widget.card-announcement,
+[data-theme="dark"] #aside-content > .sticky_layout > .card-widget,
+[data-theme="dark"] #aside-content > .card-widget.welcomeBoxClass,
+[data-theme="dark"] #recent-posts > #noticeList,
+[data-theme="dark"] .layout > #post,
+[data-theme="dark"] #recent-posts > .recent-post-item,
+[data-theme="dark"] .layout > #page,
+[data-theme="dark"] .layout > #archive,
+[data-theme="dark"] .layout > #category,
+[data-theme="dark"] .layout > #tag {
+    /* 深色模式半透明背景 */
+    background: rgba(30, 30, 40, 0.85) !important;
+    
+    /* 深色模式边框 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* 深色模式阴影 */
+    box-shadow: 
+        0 4px 25px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ===== 说说卡片特殊样式 ===== */
+#bber-talk {
+    /* 说说卡片可以有不同的透明度 */
+    background: rgba(255, 255, 255, 0.9) !important;
+}
+
+[data-theme="dark"] #bber-talk {
+    background: rgba(25, 25, 35, 0.9) !important;
+}
+
+/* ===== 个人信息卡片特殊效果 ===== */
+#aside-content > .card-widget.card-info {
+    position: relative;
+    z-index: 1;
+    overflow: hidden; /* 防止伪元素溢出 */
+}
+
+/* 个人信息卡片背景图片层 */
+#aside-content > .card-widget.card-info::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* 渐变叠加 + 背景图片 */
+    background: 
+        linear-gradient(
+            135deg, 
+            rgba(255, 255, 255, 0.3) 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.1) 100%
+        ),
+        url('/config/img/dog.jpg') center/cover no-repeat;
+    
+    opacity: 0.5; /* 背景图片透明度 */
+    transition: opacity 0.6s ease;
+    z-index: -1; /* 置于内容下方 */
+    border-radius: 16px; /* 与卡片圆角一致 */
+}
+
+/* 深色模式个人信息卡片背景 */
+[data-theme="dark"] #aside-content > .card-widget.card-info::before {
+    background: 
+        linear-gradient(
+            135deg, 
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0.2) 100%
+        ),
+        url('/config/img/dog.jpg') center/cover no-repeat;
+    opacity: 0.4;
+}
+
+/* 鼠标悬停时背景图片更明显 */
+#aside-content > .card-widget.card-info:hover::before {
+    opacity: 0.7;
+}
+
+/* ===== 头像悬浮消失效果 ===== */
+#aside-content div.card-widget.card-info .avatar-img {
+    transition: all 0.5s ease;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+#aside-content div.card-widget.card-info .avatar-img:hover {
+    opacity: 0;
+    transform: scale(1.1); /* 消失前稍微放大 */
+}
+
+/* ===== Follow me 按钮美化 ===== */
+#aside-content > .card-widget.card-info > #card-info-btn {
+    background: rgba(62, 184, 190, 0.9) !important; /* 半透明背景 */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+/* 按钮悬停效果 */
+#card-info-btn:hover,
+#card-info-btn:hover .icon,
+#card-info-btn:hover span {
+    transform: scale(1.08);
+    background: rgba(62, 184, 190, 1) !important; /* 悬停时不透明 */
+    box-shadow: 0 6px 20px rgba(62, 184, 190, 0.4);
+}
+
+/* ===== 最新评论图片圆角 ===== */
+#card-newest-comments img {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease;
+}
+
+#card-newest-comments img:hover {
+    transform: scale(1.05);
+}
+
+/* ===== 社交图标颜色适配 ===== */
+/* 浅色模式社交图标 */
+.social-icon i {
+    color: rgba(0, 0, 0, 0.7) !important;
+    transition: color 0.3s ease;
+}
+
+/* 深色模式社交图标为浅色 */
+[data-theme="dark"] .social-icon i {
+    color: rgba(220, 220, 220, 0.9) !important;
+}
+
+.social-icon i:hover {
+    color: #3eb8be !important; /* 品牌色 */
+    transform: scale(1.2);
+}
+
+/* ===== 布局优化 ===== */
+/* 隐藏侧边栏时的最大宽度 */
+.layout.hide-aside {
+    max-width: 1200px;
+}
+
+/* ===== 响应式调整 ===== */
+/* 移动端透明度调整 */
+@media (max-width: 768px) {
+    #bber-talk,
+    #aside-content > .card-widget.card-info,
+    #recent-posts > .recent-post-item,
+    .layout > #post {
+        background: rgba(255, 255, 255, 0.92) !important;
+    }
+    
+    [data-theme="dark"] #bber-talk,
+    [data-theme="dark"] #aside-content > .card-widget.card-info,
+    [data-theme="dark"] #recent-posts > .recent-post-item,
+    [data-theme="dark"] .layout > #post {
+        background: rgba(30, 30, 40, 0.92) !important;
+    }
+}
+
+/* ===== 卡片悬停增强效果 ===== */
+/* 为所有卡片添加悬停动画 */
+#aside-content > .card-widget,
+#recent-posts > .recent-post-item,
+.layout > #post {
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#aside-content > .card-widget:hover,
+#recent-posts > .recent-post-item:hover,
+.layout > #post:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] #aside-content > .card-widget:hover,
+[data-theme="dark"] #recent-posts > .recent-post-item:hover,
+[data-theme="dark"] .layout > #post:hover {
+    box-shadow: 
+        0 8px 35px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}

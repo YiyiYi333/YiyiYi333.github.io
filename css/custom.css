@@ -1,0 +1,10 @@
+/* 侧边栏头像卡片 */
+#aside-content>.card-widget.card-info::before {
+  background: url('https://imgyi.ranranran.qzz.io/file/Yu3iMaOq.jpeg');
+  border: 0;
+  position: absolute;
+  background-size: cover;
+  -webkit-animation: Gradient 10s ease infinite;
+  -moz-animation: Gradient 10s ease infinite;
+  animation: Gradient 10s ease infinite !important;
+}
